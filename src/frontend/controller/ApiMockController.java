@@ -1,4 +1,4 @@
-package org.example.controller;
+package frontend.controller;
 
 import org.example.dto.AuthResponse;
 import org.example.dto.LoginRequest;
