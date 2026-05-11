@@ -2,8 +2,8 @@ package com.chifir.controller;
 
 import com.chifir.dto.AuthResponse;
 import com.chifir.dto.LoginRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.chifir.dto.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/auth")

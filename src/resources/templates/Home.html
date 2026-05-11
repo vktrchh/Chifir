@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+    <title>Chifir</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Chifir</h2>
+    <h3>Homepage</h3>
+
+    <a href="/myacc">My account</a>
+    <a href="/subscribers">My subscribers</a>
+    <a href="/subscriptions">My subscriptions</a>
+    <a href="/likes">Likes</a>
+    <a href="/messages">Messages</a>
+    <a href="/search">Search</a>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            localStorage.setItem('token', data.token);
+            window.location.href = '/';
+        } else {
+            document.getElementById('message').innerText = data.message;
+        }
+    });
+</script>
+</body>
+</html>
