@@ -1,4 +1,4 @@
-package frontend.dto;
+package com.chifir.dto;
 
 import lombok.Data;
 
