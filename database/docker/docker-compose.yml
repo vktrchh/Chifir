@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  postgres:
+    build: .
+    container_name: microblog-postgres
+    environment:
+      POSTGRES_DB: microblog_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password_change_me}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    networks:
+      - microblog-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+          cpus: '8'
+        reservations:
+          memory: 8G
+          cpus: '4'
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: microblog-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@microblog.com
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin_password_change_me}
+    ports:
+      - "5050:80"
+    networks:
+      - microblog-network
+    depends_on:
+      - postgres
+
+  backup:
+    image: postgres:15-alpine
+    container_name: microblog-backup
+    volumes:
+      - ./scripts:/scripts
+      - ./backups:/backups
+    environment:
+      DB_HOST: postgres
+      DB_NAME: microblog_db
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD:-secure_password_change_me}
+    entrypoint: |
+      sh -c "
+      while true; do
+        /scripts/backup.sh
+        sleep 86400
+      done
+      "
+    networks:
+      - microblog-network
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  microblog-network:
+    driver: bridge
