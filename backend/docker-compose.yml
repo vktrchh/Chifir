@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: chifir-postgres
+    environment:
+      POSTGRES_DB: chifir
+      POSTGRES_USER: chifir
+      POSTGRES_PASSWORD: chifir
+    ports:
+      - "5432:5432"
+    volumes:
+      - chifir-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  chifir-postgres-data:
