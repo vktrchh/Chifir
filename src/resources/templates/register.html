@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<style>
+    body {
+        background-color: #BC8F8F;
+    }
+    .container {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        margin-top: 100px;
+    }
+    h2 {
+      font-size: 40px;
+      color: #FAEBD7;
+    }
+</style>
+<head>
+    <title>Chifir</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Chifir</h2>
+    <h3>Register</h3>
+
+    <li><input type="email" id="email" placeholder="Email" required></li>
+    <li><input type="username" id="username" placeholder="Username" required></li>
+    <li><input type="password" id="password" placeholder="Password" required></li>
+    <li><input type="retype" id="retype" placeholder="Retype password" required></li>
+
+    <li><button type="submit">Continue</button></li>
+
+    </form>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+    <div id="message"></div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            localStorage.setItem('token', data.token);
+            window.location.href = '/';
+        } else {
+            document.getElementById('message').innerText = data.message;
+        }
+    });
+</script>
+</body>
+</html>
